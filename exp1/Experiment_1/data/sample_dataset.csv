@@ -1,0 +1,28 @@
+age,study_hours,attendance_pct,program,learning_mode,passed
+18,2.5,72,AI,Online,No
+19,4.0,85,AI,Hybrid,Yes
+20,5.5,91,Data Science,InPerson,Yes
+,1.5,64,Software,Online,No
+21,6.0,96,Data Science,Hybrid,Yes
+22,3.0,78,Software,InPerson,No
+19,4.5,88,AI,Online,Yes
+20,2.0,,Software,Hybrid,No
+23,7.0,98,Data Science,InPerson,Yes
+18,3.5,82,AI,Hybrid,Yes
+21,5.0,90,,Online,Yes
+22,1.0,59,Data Science,InPerson,No
+19,6.5,94,AI,,Yes
+20,3.0,76,Software,Online,No
+21,4.0,86,Data Science,Hybrid,Yes
+18,2.0,67,AI,InPerson,No
+23,5.5,93,Software,Hybrid,Yes
+19,3.0,80,Data Science,Online,No
+20,4.5,89,AI,InPerson,Yes
+22,2.5,73,Software,Online,No
+21,5.0,92,Data Science,Hybrid,Yes
+19,1.5,62,AI,Online,No
+20,5.5,95,Software,InPerson,Yes
+18,3.0,79,Data Science,Hybrid,No
+19,4.0,85,AI,Hybrid,Yes
+18,2.5,72,AI,Online,No
+20,5.5,91,Data Science,InPerson,Yes

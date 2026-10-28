@@ -1,0 +1,13 @@
+# Core dataset analysis and preprocessing (Python 3.10+)
+numpy>=1.26
+pandas>=2.1
+matplotlib>=3.8
+seaborn>=0.13
+scikit-learn>=1.4
+streamlit>=1.40
+
+# Optional integrations are documented in README.md:
+# tensorflow
+# torch
+# langchain
+# langchain-openai

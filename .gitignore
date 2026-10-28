@@ -1,0 +1,33 @@
+@'
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+venv*/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+.streamlit/secrets.toml
+
+# Model weights
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+*.onnx
+*.gguf
+
+# Common generated files
+.DS_Store
+Thumbs.db
+'@ | Set-Content -Path "D:\gen_ai\.gitignore" -Encoding utf8

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DCGAN Face Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Generative AI Laboratory</p>
+        <h1>DCGAN Face Generator</h1>
+        <p class="subtitle">
+          Generate new synthetic human face images from a trained CelebA DCGAN.
+        </p>
+      </header>
+
+      <section class="controls">
+        <label for="count">Number of faces</label>
+        <select id="count" name="count">
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="9">9</option>
+        </select>
+        <button id="generateBtn" type="button">Generate Face</button>
+      </section>
+
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="loading" class="loading hidden">Generating...</div>
+
+      <section class="gallery" id="gallery" aria-live="polite"></section>
+    </main>
+
+    <script>
+      const gallery = document.getElementById('gallery');
+      const statusEl = document.getElementById('status');
+      const loadingEl = document.getElementById('loading');
+      const generateBtn = document.getElementById('generateBtn');
+      const countSelect = document.getElementById('count');
+
+      async function generateFaces() {
+        const count = Number(countSelect.value || 1);
+        generateBtn.disabled = true;
+        loadingEl.classList.remove('hidden');
+        statusEl.textContent = 'Generating faces...';
+        statusEl.classList.remove('error');
+
+        try {
+          const response = await fetch('/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ count })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Unable to generate faces.');
+          }
+
+          gallery.innerHTML = '';
+          data.images.forEach((src) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = 'Generated face';
+            img.className = 'face-image';
+            gallery.appendChild(img);
+          });
+
+          statusEl.textContent = `${data.images.length} face${data.images.length > 1 ? 's' : ''} generated successfully.`;
+        } catch (error) {
+          statusEl.textContent = error.message;
+          statusEl.classList.add('error');
+        } finally {
+          loadingEl.classList.add('hidden');
+          generateBtn.disabled = false;
+        }
+      }
+
+      generateBtn.addEventListener('click', generateFaces);
+    </script>
+  </body>
+</html>

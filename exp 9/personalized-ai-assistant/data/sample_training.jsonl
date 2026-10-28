@@ -1,0 +1,3 @@
+{"instruction": "Answer in one sentence: What is a large language model?", "response": "A large language model is a neural network trained on massive text data to predict the next token and generate useful language."}
+{"instruction": "Answer in one sentence: What is RAG?", "response": "Retrieval-augmented generation (RAG) retrieves relevant document chunks and gives that context to the model before answering."}
+{"instruction": "Answer in one sentence: Why is LoRA useful?", "response": "LoRA is useful because it adds trainable low-rank adapters to a frozen base model, reducing memory use and training cost."}

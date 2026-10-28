@@ -1,0 +1,29 @@
+
+[2026-10-27 21:45:36] Starting TensorFlow & Python Operations for GenAI Foundations (Project environment · .venv/Scripts/python.exe)
+2026-10-27 21:45:38.031 Uvicorn server started on 127.0.0.1:8762
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8762
+
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793117790.234496   12228 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793117798.326940   12228 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING:tensorflow:From D:\gen_ai\exp 2\tensor_genai_lab\.venv\Lib\site-packages\keras\src\backend\common\global_state.py:82: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+I0000 00:00:1793117823.667029   22220 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 AVX_VNNI AVX_VNNI_INT8 AVX_NE_CONVERT FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+E0000 00:00:1793117823.701801   22220 util.cc:131] oneDNN supports DT_INT32 only on platforms with AVX-512. Falling back to the default Eigen-based implementation if present.
+
+[2026-10-28 10:58:05] Starting TensorFlow & Python Operations for GenAI Foundations (Project environment · .venv/Scripts/python.exe)
+2026-10-28 10:58:06.790 Uvicorn server started on 127.0.0.1:8762
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8762
+
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793165317.816794    7972 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793165327.999224    7972 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.

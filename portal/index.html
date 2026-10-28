@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090e1b">
+  <title>GenAI Lab | Experiment Portal</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090e1b;
+      --panel: #111a2b;
+      --panel-raised: #151f32;
+      --line: rgba(165, 185, 225, .12);
+      --muted: #8d9ab4;
+      --text: #eff3ff;
+      --blue: #8299ff;
+      --cyan: #62d4e4;
+      --green: #6bd5ac;
+      --amber: #f0bf74;
+      --red: #f18b98;
+      --violet: #ad91ff;
+      --pink: #f08dc1;
+      --orange: #eea46e;
+      --teal: #69d6c6;
+      --indigo: #9298ff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 63% -12%, rgba(87, 108, 225, .19), transparent 39%),
+        radial-gradient(ellipse at 96% 40%, rgba(30, 147, 182, .08), transparent 32%),
+        var(--bg);
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .shell { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 252px;
+      flex: 0 0 252px;
+      min-height: 100vh;
+      padding: 27px 17px 20px;
+      border-right: 1px solid var(--line);
+      background: rgba(11, 17, 30, .86);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 29px; }
+    .brand-mark {
+      width: 40px; height: 40px; display: grid; place-items: center;
+      border-radius: 13px; color: white; font-size: 19px; font-weight: 800;
+      background: linear-gradient(145deg, #7d8dff, #4a56b8);
+      box-shadow: 0 8px 26px rgba(100, 116, 255, .26);
+    }
+    .brand-name { font-size: 15px; font-weight: 730; letter-spacing: -.3px; }
+    .brand-sub { color: var(--muted); font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase; margin-top: 4px; }
+    .nav-label { color: #64728e; padding: 9px 12px; font-size: 10px; letter-spacing: 1.4px; font-weight: 700; text-transform: uppercase; }
+    .nav { display: grid; gap: 5px; }
+    .nav button {
+      border: 0; background: transparent; padding: 11px 12px; border-radius: 10px;
+      display: flex; gap: 12px; align-items: center; color: #9daac2;
+      text-align: left; font-size: 13px; cursor: pointer; transition: .2s ease;
+    }
+    .nav button:hover, .nav button.active { background: rgba(129, 151, 255, .12); color: #e7ebff; }
+    .nav .nav-icon { width: 19px; text-align: center; font-size: 15px; }
+    .side-bottom { margin-top: auto; }
+    .runtime-card { margin: 12px 4px; padding: 15px; background: #101a2b; border: 1px solid var(--line); border-radius: 13px; }
+    .runtime-head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 650; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(107, 213, 172, .10); }
+    .runtime-copy { color: var(--muted); line-height: 1.55; font-size: 11px; margin-top: 9px; }
+    .side-foot { color: #58657e; font-size: 10px; line-height: 1.6; padding: 12px 9px 0; }
+    main { flex: 1; min-width: 0; max-width: 1680px; margin: 0 auto; padding: 31px clamp(22px, 4vw, 62px) 48px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 27px; }
+    .breadcrumb { color: var(--muted); font-size: 12px; }
+    .breadcrumb strong { color: #dce5fa; font-weight: 600; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .local-pill { border: 1px solid var(--line); border-radius: 20px; color: #a9bad3; font-size: 11px; padding: 7px 11px; background: rgba(17, 26, 43, .75); }
+    .local-pill span { color: var(--green); margin-right: 5px; }
+    .avatar { width: 33px; height: 33px; border-radius: 50%; background: linear-gradient(140deg, #404c8d, #202b49); display: grid; place-items: center; font-size: 12px; font-weight: 700; border: 1px solid rgba(168, 183, 229, .2); }
+    .hero {
+      position: relative; overflow: hidden; padding: clamp(24px, 4vw, 44px);
+      border: 1px solid rgba(142, 160, 240, .17); border-radius: 22px;
+      background: linear-gradient(112deg, rgba(28, 39, 72, .94), rgba(17, 28, 48, .92) 58%, rgba(15, 44, 60, .85));
+      box-shadow: 0 22px 65px rgba(0, 0, 0, .14);
+      animation: rise .55s ease both;
+    }
+    .hero:after { content: ""; position: absolute; width: 360px; height: 360px; border-radius: 50%; right: 3%; top: -225px; background: rgba(108, 128, 255, .12); filter: blur(2px); }
+    .hero-kicker { color: #a9b5ff; font-size: 10px; letter-spacing: 1.75px; font-weight: 750; text-transform: uppercase; margin-bottom: 15px; }
+    .hero h1 { margin: 0; max-width: 700px; font-size: clamp(30px, 4vw, 47px); letter-spacing: -1.8px; line-height: 1.09; }
+    .hero h1 span { color: #9ba8ff; }
+    .hero p { color: #acb8d0; max-width: 600px; margin: 15px 0 22px; line-height: 1.65; font-size: 14px; }
+    .hero-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .primary-btn {
+      border: 0; border-radius: 9px; padding: 11px 15px; cursor: pointer; color: white;
+      font-size: 12px; font-weight: 700; background: linear-gradient(135deg, #7787f3, #5666ce);
+      box-shadow: 0 7px 20px rgba(96, 111, 223, .2); transition: transform .18s, filter .18s;
+    }
+    .primary-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    .text-link { background: transparent; border: 0; color: #ccd5f5; font-size: 12px; cursor: pointer; padding: 10px; }
+    .hero-note { color: #8290ab; font-size: 11px; margin-left: auto; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin: 20px 0 33px; }
+    .stat {
+      border: 1px solid var(--line); border-radius: 13px; padding: 15px 17px;
+      background: rgba(17, 26, 43, .78); display: flex; align-items: center; gap: 12px;
+    }
+    .stat-icon { width: 35px; height: 35px; border-radius: 10px; display: grid; place-items: center; background: rgba(124, 144, 255, .12); font-size: 15px; }
+    .stat-value { font-size: 20px; font-weight: 720; letter-spacing: -.4px; }
+    .stat-label { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin: 30px 0 16px; }
+    .eyebrow { color: #8395ee; font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 730; margin-bottom: 7px; }
+    h2 { font-size: 21px; letter-spacing: -.6px; margin: 0; }
+    .section-sub { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .search-wrap { position: relative; flex: 1 1 250px; max-width: 360px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8390a9; font-size: 14px; }
+    .search { width: 100%; color: #e9efff; border: 1px solid var(--line); outline: none; background: #111a2b; border-radius: 9px; padding: 10px 12px 10px 35px; font-size: 12px; }
+    .search:focus { border-color: rgba(133, 151, 255, .55); box-shadow: 0 0 0 3px rgba(111, 132, 244, .08); }
+    .filter-select { color: #cad3e7; border: 1px solid var(--line); background: #111a2b; border-radius: 9px; padding: 10px 31px 10px 12px; font-size: 12px; outline: none; }
+    .result-count { margin-left: auto; color: var(--muted); font-size: 11px; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      --accent: var(--blue);
+      min-width: 0; padding: 17px; border-radius: 15px; position: relative; overflow: hidden;
+      border: 1px solid var(--line); background: linear-gradient(155deg, rgba(19, 29, 47, .98), rgba(14, 22, 37, .98));
+      transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+      animation: rise .42s ease both;
+    }
+    .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); box-shadow: 0 14px 30px rgba(0, 0, 0, .18); }
+    .card:before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); opacity: .8; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .exp-tag { color: var(--accent); font-size: 9px; letter-spacing: 1.2px; font-weight: 780; }
+    .framework { color: #96a4be; font-size: 10px; border: 1px solid var(--line); border-radius: 20px; padding: 5px 8px; }
+    .card-title-row { display: flex; gap: 11px; align-items: flex-start; margin: 18px 0 9px; }
+    .card-icon { width: 39px; height: 39px; flex: 0 0 39px; border-radius: 11px; background: color-mix(in srgb, var(--accent) 13%, #111a2b); display: grid; place-items: center; font-size: 17px; }
+    .card h3 { font-size: 15px; line-height: 1.35; letter-spacing: -.24px; margin: 1px 0 0; }
+    .card-desc { color: #94a1ba; font-size: 11px; line-height: 1.6; min-height: 37px; margin: 0 0 13px; }
+    .tech-list { display: flex; flex-wrap: wrap; gap: 5px; min-height: 24px; }
+    .tech { color: #a9b4ca; font-size: 9px; border-radius: 5px; background: rgba(119, 139, 188, .09); padding: 5px 7px; }
+    .card-status { display: flex; gap: 7px; align-items: flex-start; margin: 13px 0 11px; color: #97a5bc; font-size: 10px; line-height: 1.45; }
+    .status-dot { flex: 0 0 7px; width: 7px; height: 7px; border-radius: 50%; margin-top: 3px; background: #7f8da5; }
+    .state-ready .status-dot, .state-running .status-dot { background: var(--green); }
+    .state-starting .status-dot { background: var(--amber); animation: blink 1s infinite; }
+    .state-error .status-dot, .state-launch_failed .status-dot, .state-blocked .status-dot { background: var(--red); }
+    .state-setup .status-dot, .state-dependencies_missing .status-dot, .state-environment_missing .status-dot, .state-project_missing .status-dot { background: var(--amber); }
+    .card-runtime { color: #66748f; font-size: 9px; line-height: 1.45; min-height: 14px; margin: -4px 0 11px; }
+    .card-help { margin: 0 0 12px; color: #8795ae; font-size: 10px; }
+    .card-help summary { width: fit-content; color: #a7b3d2; cursor: pointer; list-style: none; }
+    .card-help summary::-webkit-details-marker { display: none; }
+    .card-help summary:after { content: "＋"; margin-left: 6px; color: #8d9cf3; }
+    .card-help[open] summary:after { content: "−"; }
+    .card-help p { margin: 8px 0 0; line-height: 1.55; }
+    .card-actions { display: flex; align-items: center; gap: 8px; }
+    .card-action {
+      display: inline-flex; gap: 7px; align-items: center; justify-content: center;
+      min-height: 34px; padding: 0 11px; border: 1px solid rgba(134, 153, 235, .22);
+      border-radius: 8px; background: rgba(111, 130, 225, .10); color: #dce3ff;
+      font-size: 10px; font-weight: 680; cursor: pointer; text-decoration: none; transition: .18s;
+    }
+    .card-action:hover:not(:disabled) { background: rgba(111, 130, 225, .2); border-color: rgba(134, 153, 235, .42); }
+    .card-action:disabled { cursor: not-allowed; opacity: .45; }
+    .card-action.open { color: #07151a; background: #72d9bd; border-color: #72d9bd; }
+    .card-action.stop { color: #f0a2ac; background: transparent; border-color: rgba(241, 139, 152, .22); }
+    .setup-copy { flex: 1; color: #8190aa; font-size: 9px; line-height: 1.4; text-align: right; }
+    .empty { grid-column: 1 / -1; padding: 35px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 14px; }
+    .about {
+      margin-top: 39px; padding: 25px; border: 1px solid var(--line); border-radius: 16px;
+      background: linear-gradient(135deg, rgba(20, 30, 50, .92), rgba(13, 23, 38, .92));
+      display: grid; grid-template-columns: 1.25fr 1fr; gap: 30px;
+    }
+    .about p { color: #98a6bf; font-size: 12px; line-height: 1.75; margin: 10px 0 0; }
+    .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; align-content: center; }
+    .principle { padding: 12px; border-radius: 10px; background: rgba(124, 143, 191, .07); }
+    .principle strong { display: block; font-size: 11px; margin-bottom: 5px; }
+    .principle span { display: block; font-size: 10px; color: #8795ae; line-height: 1.45; }
+    .footer { display: flex; justify-content: space-between; gap: 15px; padding: 20px 2px 0; color: #596780; font-size: 10px; }
+    .toast { position: fixed; bottom: 20px; right: 20px; max-width: min(390px, calc(100vw - 40px)); padding: 13px 16px; color: #e9efff; background: #202c43; border: 1px solid rgba(153, 172, 221, .23); border-radius: 10px; box-shadow: 0 15px 40px #0007; font-size: 12px; z-index: 20; opacity: 0; transform: translateY(8px); pointer-events: none; transition: .2s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { border-color: rgba(241, 139, 152, .45); }
+    .hidden { display: none !important; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes blink { 50% { opacity: .35; } }
+    @media (max-width: 1120px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 780px) {
+      .sidebar { width: 68px; flex-basis: 68px; padding: 20px 8px; }
+      .brand { justify-content: center; padding: 3px 0 24px; }
+      .brand-copy, .nav-label, .nav-text, .runtime-card, .side-foot { display: none; }
+      .nav button { justify-content: center; padding: 12px 0; }
+      .nav .nav-icon { font-size: 17px; }
+      main { padding: 22px 18px 35px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .about { grid-template-columns: 1fr; gap: 18px; }
+    }
+    @media (max-width: 560px) {
+      .topbar { margin-bottom: 17px; }
+      .local-pill { font-size: 0; }
+      .local-pill span { font-size: 12px; margin: 0; }
+      .hero { border-radius: 16px; }
+      .hero-note { margin: 5px 0 0; width: 100%; }
+      .stats { gap: 8px; margin: 13px 0 25px; }
+      .stat { padding: 11px; gap: 8px; }
+      .stat-icon { width: 30px; height: 30px; }
+      .stat-value { font-size: 17px; }
+      .cards { grid-template-columns: 1fr; }
+      .card-desc { min-height: auto; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .principles { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">G</div>
+        <div class="brand-copy">
+          <div class="brand-name">GenAI Lab</div>
+          <div class="brand-sub">Experiment portal</div>
+        </div>
+      </div>
+      <div class="nav-label">Workspace</div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" data-scroll="home"><span class="nav-icon">⌂</span><span class="nav-text">Home</span></button>
+        <button data-scroll="experiments"><span class="nav-icon">▦</span><span class="nav-text">All Experiments</span></button>
+        <button data-scroll="about"><span class="nav-icon">ⓘ</span><span class="nav-text">About the Lab</span></button>
+      </nav>
+      <div class="side-bottom">
+        <div class="runtime-card">
+          <div class="runtime-head"><span class="pulse"></span> Local runtime</div>
+          <div class="runtime-copy">Experiments open as separate local apps. A setup issue in one practical does not affect the rest of the portal.</div>
+        </div>
+        <div class="side-foot">Built for learning, exploration, and practical demonstration.<br>GenAI Lab · Local workspace</div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="breadcrumb">Workspace <span> / </span> <strong>Experiment portal</strong></div>
+        <div class="top-actions">
+          <div class="local-pill"><span>●</span> Running locally</div>
+          <div class="avatar" aria-label="GenAI Lab">GL</div>
+        </div>
+      </div>
+
+      <section class="hero" id="home">
+        <div class="hero-kicker">Generative AI · Practical learning environment</div>
+        <h1>Build, explore &amp; create<br>with <span>Generative AI.</span></h1>
+        <p>Welcome to your GenAI Lab — one home for ten hands-on experiments, from tensor foundations and language models to image, music, and video generation.</p>
+        <div class="hero-row">
+          <button class="primary-btn" id="exploreButton">Explore experiments <span aria-hidden="true">→</span></button>
+          <button class="text-link" data-scroll="about">About the lab</button>
+          <span class="hero-note">10 practicals · multiple frameworks · one workspace</span>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Lab at a glance">
+        <div class="stat"><div class="stat-icon">▦</div><div><div class="stat-value">10</div><div class="stat-label">Experiments</div></div></div>
+        <div class="stat"><div class="stat-icon">⌘</div><div><div class="stat-value">3</div><div class="stat-label">App frameworks</div></div></div>
+        <div class="stat"><div class="stat-icon">✦</div><div><div class="stat-value">5A + 5B</div><div class="stat-label">Separate practicals</div></div></div>
+        <div class="stat"><div class="stat-icon">◉</div><div><div class="stat-value">Local</div><div class="stat-label">Isolated app processes</div></div></div>
+      </section>
+
+      <section id="experiments">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">The practical library</div>
+            <h2>Explore all experiments</h2>
+            <div class="section-sub">Choose a practical to open its existing application.</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <label class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" type="search" placeholder="Search experiments or technologies…" aria-label="Search experiments"></label>
+          <select id="frameworkFilter" class="filter-select" aria-label="Filter by framework">
+            <option value="all">All frameworks</option><option>Streamlit</option><option>Gradio</option><option>Flask</option>
+          </select>
+          <select id="technologyFilter" class="filter-select" aria-label="Filter by technology"><option value="all">All technologies</option></select>
+          <span class="result-count" id="resultCount">10 experiments</span>
+        </div>
+        <div class="cards" id="cards" aria-live="polite"></div>
+      </section>
+
+      <section class="about" id="about">
+        <div>
+          <div class="eyebrow">About the lab</div>
+          <h2>A practical path into GenAI</h2>
+          <p>This lab brings together focused, runnable demonstrations of generative AI concepts. Each practical keeps its own implementation, dependencies, and framework; the portal connects to those applications without merging their Python runtimes or replacing their functionality.</p>
+          <p>Some experiments need model files, credentials, compatible hardware, or an approved runtime. Their cards show setup guidance and honest status so you can choose the right next step.</p>
+        </div>
+        <div class="principles">
+          <div class="principle"><strong>Learn by doing</strong><span>Move from foundations to hands-on model exploration.</span></div>
+          <div class="principle"><strong>Keep it modular</strong><span>Existing apps stay independent and in their own folders.</span></div>
+          <div class="principle"><strong>Run transparently</strong><span>Launch state and practical setup needs remain visible.</span></div>
+          <div class="principle"><strong>Build responsibly</strong><span>Use local runtimes, documented setup, and approved access.</span></div>
+        </div>
+      </section>
+
+      <footer class="footer"><span>GenAI Lab · Learning through experimentation</span><span>Portal process stays local to this computer</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    "use strict";
+    const PORTAL_TOKEN = "__PORTAL_TOKEN__";
+    const cardsElement = document.getElementById("cards");
+    const searchElement = document.getElementById("search");
+    const frameworkElement = document.getElementById("frameworkFilter");
+    const technologyElement = document.getElementById("technologyFilter");
+    const resultCount = document.getElementById("resultCount");
+    const toast = document.getElementById("toast");
+    let experiments = [];
+    let toastTimer;
+
+    const icons = {
+      table: "▤", cpu: "⌘", message: "✧", image: "▧", spark: "✦",
+      orbit: "◉", face: "◌", layers: "▱", music: "♫", brain: "✺", video: "▷"
+    };
+
+    function showToast(message, isError = false) {
+      toast.textContent = message;
+      toast.classList.toggle("error", isError);
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 4200);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+    function actionMarkup(item) {
+      if (["blocked", "setup", "dependencies_missing", "environment_missing", "project_missing"].includes(item.state)) {
+        const label = item.state === "dependencies_missing" ? "Dependencies missing"
+          : item.state === "environment_missing" ? "Environment unavailable"
+          : item.state === "project_missing" ? "Project unavailable"
+          : "Setup required";
+        return `<button class="card-action" disabled title="${escapeHtml(item.status_message)}">${label}</button>
+          <span class="setup-copy">Read setup note</span>`;
+      }
+      if (item.state === "running") {
+        return `<a class="card-action open" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">Open experiment ↗</a>
+          <button class="card-action stop" data-action="stop" data-id="${escapeHtml(item.id)}">Stop</button>`;
+      }
+      if (item.state === "starting") {
+        return `<button class="card-action" disabled>Starting…</button>
+          <button class="card-action stop" data-action="stop" data-id="${escapeHtml(item.id)}">Cancel</button>`;
+      }
+      if (item.state === "error" || item.state === "launch_failed") {
+        return `<button class="card-action" data-action="start" data-id="${escapeHtml(item.id)}">Try again</button>
+          <span class="setup-copy">See setup guidance</span>`;
+      }
+      return `<button class="card-action" data-action="start" data-id="${escapeHtml(item.id)}">Launch experiment ↗</button>
+        <span class="setup-copy">Opens on port ${escapeHtml(item.port)}</span>`;
+    }
+
+    function cardMarkup(item, index) {
+      const tags = item.technologies.map(technology =>
+        `<span class="tech">${escapeHtml(technology)}</span>`).join("");
+      const statusText = item.state === "ready"
+        ? item.status_message
+        : item.status_message;
+      const modelNote = item.model_note
+        ? `<div class="card-runtime">${escapeHtml(item.model_note)}</div>`
+        : "";
+      return `<article class="card state-${escapeHtml(item.state)}" data-id="${escapeHtml(item.id)}" data-accent="${escapeHtml(item.accent)}" style="--accent:var(--${escapeHtml(item.accent)}) ; animation-delay:${Math.min(index, 9) * 35}ms">
+        <div class="card-top"><span class="exp-tag">${escapeHtml(item.label)}</span><span class="framework">${escapeHtml(item.framework)}</span></div>
+        <div class="card-title-row"><div class="card-icon">${icons[item.icon] || "✦"}</div><h3>${escapeHtml(item.title)}</h3></div>
+        <p class="card-desc">${escapeHtml(item.description)}</p>
+        <div class="tech-list">${tags}</div>
+        <div class="card-status"><span class="status-dot"></span><span>${escapeHtml(statusText)}</span></div>
+        <div class="card-runtime">${escapeHtml(item.runtime || "")}</div>
+        ${modelNote}
+        <details class="card-help"><summary>Setup &amp; troubleshooting</summary><p>${escapeHtml(item.setup)}</p></details>
+        <div class="card-actions">${actionMarkup(item)}</div>
+      </article>`;
+    }
+
+    function applyFilters() {
+      const query = searchElement.value.trim().toLowerCase();
+      const framework = frameworkElement.value;
+      const technology = technologyElement.value;
+      const filtered = experiments.filter(item => {
+        const searchable = [item.title, item.description, item.framework, ...item.technologies].join(" ").toLowerCase();
+        return (!query || searchable.includes(query))
+          && (framework === "all" || item.framework === framework)
+          && (technology === "all" || item.technologies.includes(technology));
+      });
+      cardsElement.innerHTML = filtered.length
+        ? filtered.map(cardMarkup).join("")
+        : `<div class="empty">No experiment matches those filters. Try another search.</div>`;
+      resultCount.textContent = `${filtered.length} experiment${filtered.length === 1 ? "" : "s"}`;
+    }
+
+    function updateTechnologyOptions() {
+      const selected = technologyElement.value;
+      const technologies = [...new Set(experiments.flatMap(item => item.technologies))].sort();
+      technologyElement.innerHTML = `<option value="all">All technologies</option>`
+        + technologies.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+      if (technologies.includes(selected)) technologyElement.value = selected;
+    }
+
+    async function refreshStatuses() {
+      try {
+        const response = await fetch("/api/experiments", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Portal returned ${response.status}`);
+        experiments = await response.json();
+        updateTechnologyOptions();
+        applyFilters();
+      } catch (error) {
+        showToast(`Could not load experiment statuses: ${error.message}`, true);
+      }
+    }
+
+    async function performAction(experimentId, action) {
+      const button = document.querySelector(`[data-action="${action}"][data-id="${CSS.escape(experimentId)}"]`);
+      if (button) { button.disabled = true; button.textContent = action === "start" ? "Starting…" : "Stopping…"; }
+      try {
+        const response = await fetch(`/api/experiments/${encodeURIComponent(experimentId)}/${action}`, {
+          method: "POST",
+          headers: { "X-Portal-Token": PORTAL_TOKEN }
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || `Request failed (${response.status})`);
+        showToast(result.message || "Request completed.");
+        await refreshStatuses();
+        if (action === "start") pollUntilReady(experimentId);
+      } catch (error) {
+        showToast(error.message, true);
+        await refreshStatuses();
+      }
+    }
+
+    function pollUntilReady(experimentId) {
+      let attempts = 0;
+      const timer = setInterval(async () => {
+        attempts += 1;
+        await refreshStatuses();
+        const item = experiments.find(experiment => experiment.id === experimentId);
+        if (!item || ["running", "error", "launch_failed", "blocked", "setup", "dependencies_missing", "environment_missing", "project_missing"].includes(item.state) || attempts >= 60) {
+          clearInterval(timer);
+          if (item && item.state === "running") showToast(`${item.title} is ready. Open it from its card.`);
+          else if (item && ["error", "launch_failed", "dependencies_missing", "environment_missing", "project_missing", "blocked"].includes(item.state)) showToast(`${item.title} could not start. Check its status and setup note.`, true);
+          else if (attempts >= 60) showToast("Startup is taking longer than expected; the card will continue to show its live status.");
+        }
+      }, 1000);
+    }
+
+    cardsElement.addEventListener("click", event => {
+      const button = event.target.closest("[data-action]");
+      if (button && !button.disabled) performAction(button.dataset.id, button.dataset.action);
+    });
+    searchElement.addEventListener("input", applyFilters);
+    frameworkElement.addEventListener("change", applyFilters);
+    technologyElement.addEventListener("change", applyFilters);
+    document.getElementById("exploreButton").addEventListener("click", () =>
+      document.getElementById("experiments").scrollIntoView({ behavior: "smooth" }));
+    document.querySelectorAll("[data-scroll]").forEach(button => button.addEventListener("click", () => {
+      document.getElementById(button.dataset.scroll).scrollIntoView({ behavior: "smooth" });
+      document.querySelectorAll(".nav button").forEach(nav => nav.classList.toggle("active", nav.dataset.scroll === button.dataset.scroll));
+    }));
+
+    refreshStatuses();
+    setInterval(refreshStatuses, 5000);
+  </script>
+</body>
+</html>

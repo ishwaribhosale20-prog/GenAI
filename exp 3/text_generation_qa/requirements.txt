@@ -1,0 +1,6 @@
+# Install PyTorch using the command recommended at https://pytorch.org/get-started/locally/
+torch>=2.4,<3
+transformers>=4.45,<5
+sentencepiece>=0.2,<1
+accelerate>=1.2,<2
+gradio>=5,<6

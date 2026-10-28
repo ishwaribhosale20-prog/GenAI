@@ -1,0 +1,6 @@
+torch>=2.1
+transformers==4.44.2
+numpy>=1.24,<3
+scipy>=1.10
+gradio>=4.44,<6
+safetensors>=0.4

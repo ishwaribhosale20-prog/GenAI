@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVAE MNIST Digit Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+    <h1>CVAE Digit Generator</h1>
+    <p class="subtitle">
+        Select a digit and generate a new MNIST-style handwritten image
+        using a Conditional Variational Autoencoder.
+    </p>
+
+    <h2>Select a Digit</h2>
+
+    <div class="digits">
+        {% for i in range(10) %}
+        <button class="digit-btn {% if i == 0 %}selected{% endif %}"
+                onclick="selectDigit({{ i }})"
+                id="digit-{{ i }}">
+            {{ i }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <p class="selected-text">
+        Selected Number: <strong id="selectedDigit">0</strong>
+    </p>
+
+    <button class="generate-btn" onclick="generateImage()">
+        Generate Image
+    </button>
+
+    <div id="message"></div>
+
+    <div class="result">
+        <h2>Generated Image</h2>
+        <div class="image-box">
+            <img id="generatedImage" alt="Generated MNIST digit">
+        </div>
+        <p id="resultText"></p>
+    </div>
+</div>
+
+<script>
+let selectedDigit = 0;
+
+function selectDigit(digit) {
+    selectedDigit = digit;
+    document.getElementById("selectedDigit").textContent = digit;
+
+    document.querySelectorAll(".digit-btn").forEach(btn => {
+        btn.classList.remove("selected");
+    });
+
+    document.getElementById("digit-" + digit).classList.add("selected");
+}
+
+async function generateImage() {
+    const message = document.getElementById("message");
+    const resultText = document.getElementById("resultText");
+    const image = document.getElementById("generatedImage");
+
+    message.textContent = "Generating...";
+    message.className = "info";
+    resultText.textContent = "";
+    image.style.display = "none";
+
+    const formData = new FormData();
+    formData.append("digit", selectedDigit);
+
+    try {
+        const response = await fetch("/generate", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Generation failed.");
+        }
+
+        image.src = data.image;
+        image.style.display = "block";
+
+        resultText.textContent =
+            "A new handwritten-style " + data.digit +
+            " was generated from the learned latent space.";
+
+        message.textContent = "Success!";
+        message.className = "success";
+
+    } catch (error) {
+        message.textContent = error.message;
+        message.className = "error";
+    }
+}
+</script>
+</body>
+</html>

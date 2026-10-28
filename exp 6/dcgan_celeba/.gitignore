@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+checkpoints/*.pth
+outputs/generated/*.png
+outputs/generated/*.jpg
+outputs/samples/*.png
+outputs/plots/*.png
+outputs/*.json
+*.zip
+.DS_Store

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MNIST VAE Latent Space Explorer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
+        <header>
+
+            <h1>LATENT SPACE EXPLORER</h1>
+
+            <p>
+                Click anywhere inside the latent space
+                to select Z1 and Z2.
+            </p>
+
+        </header>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN CONTENT -->
+        <!-- ================================================= -->
+
+        <div class="main-grid">
+
+
+            <!-- ============================================= -->
+            <!-- LATENT SPACE -->
+            <!-- ============================================= -->
+
+            <section class="card">
+
+                <h2>Latent Space</h2>
+
+                <div class="graph-container">
+
+                    <canvas
+                        id="latentCanvas"
+                        width="600"
+                        height="600">
+                    </canvas>
+
+                </div>
+
+
+                <!-- Selected coordinates -->
+
+                <div class="coordinates">
+
+                    <div class="coordinate-box">
+
+                        <span>Z1:</span>
+
+                        <strong id="z1Value">
+                            0.00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="coordinate-box">
+
+                        <span>Z2:</span>
+
+                        <strong id="z2Value">
+                            0.00
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="buttons">
+
+                    <button
+                        id="generateButton"
+                        class="generate-button">
+
+                        Generate Image
+
+                    </button>
+
+
+                    <button
+                        id="randomButton"
+                        class="random-button">
+
+                        🎲 Random
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ============================================= -->
+            <!-- GENERATED IMAGE -->
+            <!-- ============================================= -->
+
+            <section class="card">
+
+                <h2>Generated Image</h2>
+
+
+                <div
+                    id="imageContainer"
+                    class="image-container">
+
+                    <div class="placeholder">
+
+                        Click inside the latent space
+
+                    </div>
+
+                </div>
+
+
+                <!-- Latent vector information -->
+
+                <div class="latent-info">
+
+                    Latent Vector:
+
+                    <span id="latentVector">
+                        [0.00, 0.00]
+                    </span>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- INFORMATION -->
+        <!-- ================================================= -->
+
+        <div class="info-card">
+
+            <h3>How it works</h3>
+
+            <p>
+                The VAE learns a continuous latent representation
+                of MNIST handwritten digits.
+            </p>
+
+            <p>
+                Each point in the graph represents a location
+                in the learned latent space.
+            </p>
+
+            <p>
+                Click a location to send its Z1 and Z2 values
+                to the trained decoder and generate a new image.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}">
+    </script>
+
+</body>
+
+</html>
